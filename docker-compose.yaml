@@ -22,8 +22,7 @@ services:
     volumes:
       - .:/app
     command: sh -c "
-      npm install -g npm@11 &&
-      npm install --global corepack@latest
+      npm install -g npm@11 v corepack@latest &&
       corepack enable &&
       corepack prepare pnpm@latest --activate &&
       pnpm install &&
