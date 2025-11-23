@@ -1,0 +1,25 @@
+services:
+  api:
+    image: php:8.3-fpm
+    working_dir: /var/www/api
+    volumes:
+      - ./api:/var/www/api
+    command: bash -c "
+      apt-get update &&
+      apt-get install -y zip unzip &&
+      curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
+      composer install --no-dev --optimize-autoloader &&
+      php artisan serve --host=0.0.0.0 --port=8000
+      "
+    ports: ["8000:8000"]
+
+  spa:
+    image: node:22
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: npm run dev
+    ports: ["3000:3000"]
+    depends_on: [api]
+    environment:
+      - NUXT_PUBLIC_API_BASE=http://localhost:8000/api
