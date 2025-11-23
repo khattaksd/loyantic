@@ -1,6 +1,6 @@
 services:
   api:
-    image: php:8.3-fpm
+    image: php:8.4-fpm
     working_dir: /var/www/api
     volumes:
       - ./api:/var/www/api
@@ -9,16 +9,26 @@ services:
       apt-get install -y zip unzip &&
       curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
       composer install --no-dev --optimize-autoloader &&
+      cp .env.example .env &&
+      php artisan key:generate &&
+      php artisan migrate &&
       php artisan serve --host=0.0.0.0 --port=8000
       "
     ports: ["8000:8000"]
 
   spa:
-    image: node:22
+    image: node:lts-alpine
     working_dir: /app
     volumes:
       - .:/app
-    command: npm run dev
+    command: sh -c "
+      npm install -g npm@11 &&
+      npm install --global corepack@latest
+      corepack enable &&
+      corepack prepare pnpm@latest --activate &&
+      pnpm install &&
+      pnpm dev
+      "
     ports: ["3000:3000"]
     depends_on: [api]
     environment:
