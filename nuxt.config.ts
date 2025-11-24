@@ -6,8 +6,10 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/content',
     '@vueuse/nuxt',
-    'nuxt-og-image'
+    'nuxt-og-image',
+    'nuxt-auth-sanctum'
   ],
+  ssr: false,
 
   devtools: {
     enabled: true
@@ -37,5 +39,9 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+
+  sanctum: {
+    baseUrl: 'http://localhost:8000'
   }
 })
